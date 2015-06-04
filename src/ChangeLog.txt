@@ -1,3 +1,7 @@
+Changes in 0.4.1:
+
+*c++11 compatibility
+
 Features added in 0.4.0:
 
 Added Meta-menu functionality-
