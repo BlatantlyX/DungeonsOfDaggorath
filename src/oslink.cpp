@@ -1276,10 +1276,8 @@ void OS_Link::changeVideoRes(int newWidth)
 
  if(FullScreen)
   {
-  //flags |= SDL_FULLSCREEN;
-  flags &= ~(SDL_FULLSCREEN);
-  //SDL_ShowCursor(SDL_DISABLE);
-  SDL_ShowCursor(SDL_ENABLE);
+  flags |= SDL_FULLSCREEN;
+  SDL_ShowCursor(SDL_DISABLE);
   }
  else
   {
