@@ -148,11 +148,11 @@ Viewer::Viewer() : VCNTRX(128), VCNTRY(76),
 	Utils::LoadFromHex(SP_VLA,
 		"020BA07CA474A878B074B878B07CA878B078B878BC74C07C07A87CAA74AC78B07AB478"
 		"B674B87C");
-	
+
 	Utils::LoadFromHex(WR_VLA,
 		"0303443E58446438095A4A4A46504C5A4A644866405A4A5E565A56075064565A645C6C"
 		"62625E565E5064");
-	
+
 	Utils::LoadFromHex(SC_VLA,
 		"020D4A704A6C46683E6C42744A765278527C4A7C427446783E78427C065A7C5A785278"
 		"4A7C4A805280");
@@ -453,7 +453,7 @@ bool Viewer::ShowFade(int fadeMode)
 	int * wiz;
 	VXSCAL = 0x80;
 	VYSCAL = 0x80;
-	
+
 	clearArea(&TXTPRI);
 
 	switch (fadeMode)
@@ -478,7 +478,7 @@ bool Viewer::ShowFade(int fadeMode)
 		clearArea(&TXTSTS);
 		displayWinner();
 	}
-	
+
 	while(SDL_PollEvent(&event)) ; // clear event buffer
 
 	RANGE=1;
@@ -659,7 +659,7 @@ bool Viewer::ShowFade(int fadeMode)
 // is syncronized with the 30Hz buzz and the wizard
 // crashing sound.
 bool Viewer::draw_fade()
-{	
+{
 	delay1 = delay2 = SDL_GetTicks();
 
 	if ((!done && delay1 > delay + buzzStep) && fadeVal != 0)
@@ -692,7 +692,7 @@ bool Viewer::draw_fade()
 			{
 				// Call keyboard routine ???
 			}
-		
+
 			VCTFAD = 0;
 			fadeVal = 0;
 		}
@@ -720,10 +720,10 @@ bool Viewer::draw_fade()
 			{
 				// Call keyboard routine ???
 			}
-		
+
 			fadeVal = 2;
 			delay = SDL_GetTicks();
-			
+
 			Mix_PlayChannel(fadChannel, creature.buzz, -1);
 		}
 	}
@@ -737,7 +737,7 @@ bool Viewer::draw_fade()
 
 // Same as above, but used for the intermission
 void Viewer::enough_fade()
-{	
+{
 	delay1 = delay2 = SDL_GetTicks();
 
 	if ((!done && delay1 > delay + buzzStep) && fadeVal != 0)
@@ -774,7 +774,7 @@ void Viewer::enough_fade()
 			{
 				// Call keyboard routine ???
 			}
-		
+
 			VCTFAD = 0;
 			fadeVal = 0;
 		}
@@ -803,10 +803,10 @@ void Viewer::enough_fade()
 			{
 				// Call keyboard routine ???
 			}
-		
+
 			fadeVal = 2;
 			delay = SDL_GetTicks();
-			
+
 			Mix_PlayChannel(fadChannel, creature.buzz, -1);
 		}
 	}
@@ -819,7 +819,7 @@ void Viewer::enough_fade()
 
 // Same as above, but used for death & victory
 void Viewer::death_fade(int WIZ[])
-{	
+{
 	delay1 = SDL_GetTicks();
 
 	if ((delay1 > delay + buzzStep) && fadeVal != 0)
@@ -849,7 +849,7 @@ void Viewer::death_fade(int WIZ[])
 			{
 				// Call keyboard routine ???
 			}
-		
+
 			VCTFAD = 0;
 			fadeVal = 0;
 			done = true;
@@ -1049,7 +1049,7 @@ void Viewer::STATUS()
 	}
 	idx = ((player.PRHAND & 0x8000) != 0) ? -1 : player.PRHAND;
 	object.OBJNAM(idx);
-	
+
 	ctr = 0;
 	while (parser.TOKEN[ctr] != 0xFF)
 	{
@@ -1470,7 +1470,7 @@ void Viewer::MAPPER()
 	RowCol rc;
 	dodBYTE a;
 	bool vftOnce;
-	
+
 	dungeon.DROW.row = 31;
 	dungeon.DROW.col = 31;
 	glColor3f(0.0,0.0,0.0);
@@ -1661,12 +1661,12 @@ void Viewer::MAPPER()
 			glVertex2f(crd.newX((rc.col * 8) + 1), crd.newY((rc.row * 6) + 4));
 			glVertex2f(crd.newX((rc.col * 8) + 2), crd.newY((rc.row * 6) + 4));
 			glVertex2f(crd.newX((rc.col * 8) + 2), crd.newY((rc.row * 6) + 2));
-			
+
 			glVertex2f(crd.newX((rc.col * 8) + 5), crd.newY((rc.row * 6) + 2));
 			glVertex2f(crd.newX((rc.col * 8) + 5), crd.newY((rc.row * 6) + 4));
 			glVertex2f(crd.newX((rc.col * 8) + 6), crd.newY((rc.row * 6) + 4));
 			glVertex2f(crd.newX((rc.col * 8) + 6), crd.newY((rc.row * 6) + 2));
-			
+
 			glVertex2f(crd.newX((rc.col * 8) + 3), crd.newY((rc.row * 6) + 1));
 			glVertex2f(crd.newX((rc.col * 8) + 3), crd.newY((rc.row * 6) + 5));
 			glVertex2f(crd.newX((rc.col * 8) + 4), crd.newY((rc.row * 6) + 5));
@@ -1934,14 +1934,14 @@ char Viewer::dod_to_ascii(dodBYTE c)
 }
 
 // Draws a string
-void Viewer::drawString(int x, int y, char * str, int len)
+void Viewer::drawString(int x, int y, std::string str, int len)
 {
 	int ctr;
 	glLoadIdentity();
 	glTranslatef(crd.newX(x*8), crd.newY(((y+1)*8)), 0.0);
 	for (ctr=0; ctr < len; ++ctr)
 	{
-		drawCharacter(*(str + ctr));
+		drawCharacter(str[ctr]);
 		glTranslatef(crd.newXa(8), 0.0, 0.0);
 	}
 }
@@ -2063,7 +2063,7 @@ void Viewer::drawMenu(menu mainMenu, int menu_id, int highlight)
  glLoadIdentity();
 
   // Draw Menu Items
- drawString(menu_id * 5, 0, mainMenu.getMenuName(menu_id), 
+ drawString(menu_id * 5, 0, mainMenu.getMenuName(menu_id),
                              strlen(mainMenu.getMenuName(menu_id)));
 
  for(int i = 0; i < mainMenu.getMenuSize(menu_id); i++)
@@ -2105,7 +2105,7 @@ void Viewer::drawMenu(menu mainMenu, int menu_id, int highlight)
 
   Function: Draws a menu list
 ****************************************************************/
-void Viewer::drawMenuList(int x, int y, char *title, char *list[], int listSize, int highlight)
+void Viewer::drawMenuList(int x, int y, char *title, std::string list[], int listSize, int highlight)
  {
  int length;
 
@@ -2116,11 +2116,11 @@ void Viewer::drawMenuList(int x, int y, char *title, char *list[], int listSize,
 
  drawString(x, y, title, strlen(title));
  y += 2;
- 
+
   // Draw Menu Items
  for(int i = 0; i < listSize; i++, y++)
    {
-   length = strlen(list[i]);
+   length = list[i].length();
 
    if(i == highlight)
      {
@@ -2152,16 +2152,16 @@ void Viewer::drawMenuList(int x, int y, char *title, char *list[], int listSize,
 
   Function: Draws a menu scroll bar
 ****************************************************************/
-void Viewer::drawMenuScrollbar(char *title, int current)
+void Viewer::drawMenuScrollbar(std::string title, int current)
  {
  int x;
-	
+
 	// Clear screen
  glColor4fv(bgColor);
  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
  glColor4fv(fgColor);
 
- drawString(0, 0, title, strlen(title));
+ drawString(0, 0, title, title.length());
  drawString(0, 2, "USE ARROW KEYS TO NAVIGATE", 26);
  drawString(0, 3, "PRESS ENTER WHEN FINISHED", 25);
  drawString(0, 4, "OR ESCAPE TO CANCEL", 19);

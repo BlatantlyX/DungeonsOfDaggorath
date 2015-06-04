@@ -57,7 +57,7 @@ public:
 	int		keyLen;
 
 	int		audio_rate;
-	Uint16	audio_format; 
+	Uint16	audio_format;
 	int		audio_channels;
 	int		audio_buffers;
 
@@ -65,9 +65,11 @@ private:
 	// Internal Implementation
 	void handle_key_down(SDL_keysym * keysym);	// keyboard handler
 	bool menu_return(int, int, menu);		// Used by main menu
-	int  menu_list(int x, int y, char *title, char *list[], int listSize);
+	//int  menu_list(int x, int y, char *title, char *list[], int listSize);
+	int  menu_list(int x, int y, char *title, std::string list[], int listSize);
 	void menu_string(char *newString, char *title, int maxLength);
-	int  menu_scrollbar(char *title, int min, int max, int current);
+	//int  menu_scrollbar(char *title, int min, int max, int current);
+	int  menu_scrollbar(std::string title, int min, int max, int current);
 	void loadOptFile(void);
 	void loadDefaults(void);
 	void changeFullScreen(void);

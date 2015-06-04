@@ -27,7 +27,7 @@ is held by Douglas J. Morgan.
 // Standard headers
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string>
 
 // The original source code used mostly 8-bit bytes and 16-bit
 // words for RAM variable storages.  Many of the operations in
@@ -56,7 +56,7 @@ public:
 	Coordinate() : orgWidth(256.0L), orgHeight(192.0L),
 				   curWidth(512.0L), curHeight(384.0L)
 	{}
-	
+
 	// Sets the data members based on screen width
 	// (assumes a 4/3 width/height ratio)
 	void setCurWH(double W)
@@ -66,25 +66,25 @@ public:
 		offX = (W - curWidth) / 2;
 		offY = (offX * 0.75L);
 	}
-	
+
 	// Calculates absolute screen X-coordinate based on DoD X-coordinate
 	GLfloat newX(double orgX)
 	{
 		return ((GLfloat) ((orgX) / orgWidth * curWidth) + (GLfloat) offX);
 	}
-	
+
 	// Calculates relative screen X-coordinate based on DoD X-coordinate
 	GLfloat newXa(double orgX)
 	{
 		return ((GLfloat) ((orgX) / orgWidth * curWidth));
 	}
-	
+
 	// Calculates absolute screen Y-coordinate based on DoD Y-coordinate
 	GLfloat newY(double orgY)
 	{
 		return ((GLfloat)  ((orgHeight - (orgY)) / orgHeight * curHeight) + (GLfloat) offY);
 	}
-	
+
 	// Calculates relative screen Y-coordinate based on DoD Y-coordinate
 	GLfloat newYa(double orgY)
 	{
@@ -111,7 +111,7 @@ public:
 
 	// Mutator
 	void setRC(dodBYTE r, dodBYTE c) { row=r; col=c; }
-	
+
 	// Fields
 	dodBYTE row;
 	dodBYTE col;
@@ -344,7 +344,7 @@ public:
 	Uint32	prev_time;	// previous execution timestamp
 	Uint32	next_time;	// next scheduled execution timestamp
 	long	count;		// number of times executed
-	
+
 	Task()
 		{ clear(); }
 
@@ -458,58 +458,58 @@ class Utils
 {
 public:
 	// This could be made into a template someday
-	static void LoadFromHex(dodBYTE * b, char * h)
-	{
+	static void LoadFromHex(dodBYTE * b, std::string h){
 		char hexbuf[3];
 		char * end;
 		hexbuf[2] = 0;
 		int ctr = 0;
 
-		while (*h)
+		auto hiter = h.begin();
+
+		while (hiter != h.end())
 		{
-			hexbuf[0] = *h;
-			hexbuf[1] = *(h + 1);
+			hexbuf[0] = *hiter;
+			hexbuf[1] = *(++hiter);
 			*(b + ctr) = (dodBYTE) strtoul(hexbuf, &end, 16);
 			++ctr;
-			h += 2;
+			hiter++;
 		}
 	}
 
 	// This could be made into a template someday
-	static void LoadFromHex(int * b, char * h)
-	{
+	static void LoadFromHex(int * b, std::string h){
 		char hexbuf[3];
 		char * end;
 		hexbuf[2] = 0;
 		int ctr = 0;
 
-		while (*h)
+		auto hiter = h.begin();
+
+		while (hiter != h.end())
 		{
-			hexbuf[0] = *h;
-			hexbuf[1] = *(h + 1);
-			*(b + ctr) = (int) strtoul(hexbuf, &end, 16);
+			hexbuf[0] = *hiter;
+			hexbuf[1] = *(++hiter);
+			*(b + ctr) = (dodBYTE) strtoul(hexbuf, &end, 16);
 			++ctr;
-			h += 2;
+			hiter++;
 		}
 	}
 
-	static void LoadFromDecDigit(dodBYTE * b, char * dd)
-	{
-		while (*dd)
-		{
-			*b++ = (*dd++ - '0');
+	static void LoadFromDecDigit(dodBYTE * b, std::string dd){
+		auto dditer = dd.begin();
+		while (dditer != dd.end()){
+			*b++ = (*dditer++ - '0');
 		}
 	}
 
-	static void LoadFromDecDigit(int * b, char * dd)
-	{
-		while (*dd)
-		{
-			*b++ = (*dd++ - '0');
+	static void LoadFromDecDigit(int * b, std::string dd){
+		auto dditer = dd.begin();
+		while (dditer != dd.end()){
+			*b++ = (*dditer++ - '0');
 		}
 	}
 
-	static Mix_Chunk *LoadSound(char *snd);
+	static Mix_Chunk *LoadSound(std::string snd);
 };
 
 /*******************************************************************
@@ -562,9 +562,9 @@ private:
 
 public:
 
-	 // Constructor -- initalizes strings 
-	menu() 
-	 { 
+	 // Constructor -- initalizes strings
+	menu()
+	 {
 	 strncpy(&MENU_NAME[FILE_MENU_SWITCH][0], "FILE", NUM_LENGTH);
 	 strncpy(&MENU_NAME[CONFIG_MENU_SWITCH][0], "CONFIGURE", NUM_LENGTH);
 	 strncpy(&MENU_NAME[HELP_MENU_SWITCH][0], "HELP", NUM_LENGTH);
@@ -574,7 +574,7 @@ public:
 	 MENU_SIZE[2] = NUM_HELP;
 
 	 strncpy(&FILE_MENU[FILE_MENU_NEW][0], "START NEW GAME", NUM_LENGTH);
-	 strncpy(&FILE_MENU[FILE_MENU_RETURN][0], "RETURN TO GAME", NUM_LENGTH); 
+	 strncpy(&FILE_MENU[FILE_MENU_RETURN][0], "RETURN TO GAME", NUM_LENGTH);
 	 strncpy(&FILE_MENU[FILE_MENU_ABORT][0], "ABORT GAME", NUM_LENGTH);
 	 strncpy(&FILE_MENU[FILE_MENU_EXIT][0], "EXIT", NUM_LENGTH);
 
@@ -588,11 +588,11 @@ public:
 	 strncpy(&CONFIG[CONFIG_MENU_REGEN_SPEED][0], "REGEN SPEED", NUM_LENGTH);
 	 strncpy(&CONFIG[CONFIG_MENU_RANDOM_MAZE][0], "RANDOM MAZES", NUM_LENGTH);
 	 strncpy(&CONFIG[CONFIG_MENU_SND_MODE][0], "SOUND MODES", NUM_LENGTH);
-	 strncpy(&CONFIG[CONFIG_MENU_SAVE_OPT][0], "SAVE CURRENT OPTIONS", NUM_LENGTH); 
+	 strncpy(&CONFIG[CONFIG_MENU_SAVE_OPT][0], "SAVE CURRENT OPTIONS", NUM_LENGTH);
 	 strncpy(&CONFIG[CONFIG_MENU_DEFAULTS][0], "RESTORE DEFAULTS", NUM_LENGTH);
 
-	 strncpy(&HELP[HELP_MENU_HOWTOPLAY][0], "HOW TO PLAY", NUM_LENGTH); 
-	 strncpy(&HELP[HELP_MENU_LICENSE][0], "LICENSE", NUM_LENGTH); 
+	 strncpy(&HELP[HELP_MENU_HOWTOPLAY][0], "HOW TO PLAY", NUM_LENGTH);
+	 strncpy(&HELP[HELP_MENU_LICENSE][0], "LICENSE", NUM_LENGTH);
 	 strncpy(&HELP[HELP_MENU_ABOUT][0], "ABOUT DOD", NUM_LENGTH);
 	 }
 

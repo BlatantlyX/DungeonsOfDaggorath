@@ -70,7 +70,7 @@ void OS_Link::init()
 	loadOptFile();
 
 	Uint32 ticks1, ticks2;
-	const SDL_VideoInfo * info = '\0';
+	const SDL_VideoInfo * info = {};
 	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO) < 0)
 	{
 		fprintf(stderr, "Video initialization failed: %s\n", SDL_GetError());
@@ -90,7 +90,7 @@ void OS_Link::init()
 
 	Mix_AllocateChannels(4);
 	Mix_Volume(-1, MIX_MAX_VOLUME);
-	
+
 	info = SDL_GetVideoInfo();
 	if(!info)
 	{
@@ -331,7 +331,7 @@ bool OS_Link::main_menu()
 
  scheduler.pause(true);
  viewer.drawMenu(mainMenu, col, row);
- 
+
  do
    {
    SDL_Event event;
@@ -442,7 +442,7 @@ switch(menu_id)
   case CONFIG_MENU_FULL_SCREEN:
    //Full Screen
    {
-   char *menuList[]={ "ON", "OFF" };
+   std::string menuList[]={ "ON", "OFF" };
 
    switch(menu_list(menu_id * 5, item + 2, Menu.getMenuItem(menu_id, item), menuList, 2))
     {
@@ -467,7 +467,7 @@ switch(menu_id)
   case CONFIG_MENU_VIDEO_RES:
    // Video Res
    {
-   char *menuList[]={ "640X480", "800X600", "1024X768", "1280X1024" };
+   std::string menuList[]={ "640X480", "800X600", "1024X768", "1280X1024" };
 
    switch(menu_list(menu_id * 5, item + 2, Menu.getMenuItem(menu_id, item), menuList, 4))
     {
@@ -498,7 +498,7 @@ switch(menu_id)
   case CONFIG_MENU_GRAPHICS:
     // Graphics (Normal /HIRes / vect)
    {
-   char *menuList[]={ "NORMAL GRAPHICS", "HIRES GRAPHICS", "VECTOR GRAPHICS" };
+   std::string menuList[]={ "NORMAL GRAPHICS", "HIRES GRAPHICS", "VECTOR GRAPHICS" };
 
    switch(menu_list(menu_id * 5, item + 2, Menu.getMenuItem(menu_id, item), menuList, 3))
     {
@@ -527,7 +527,7 @@ switch(menu_id)
   case CONFIG_MENU_COLOR:
    // Color (B&W / Art. / Full)
    {
-   char *menuList[]={ "BLACK WHITE" };
+   std::string menuList[]={ "BLACK WHITE" };
 
    switch(menu_list(menu_id * 5, item + 2, Menu.getMenuItem(menu_id, item), menuList, 1))
     {
@@ -551,7 +551,7 @@ switch(menu_id)
   case CONFIG_MENU_SAVEDIR:
    // Save Dir
    {
-   char *menuList[]={ "EDIT OPTS.INI FILE" };
+   std::string menuList[]={ "EDIT OPTS.INI FILE" };
 
    switch(menu_list(menu_id * 5, item + 2, Menu.getMenuItem(menu_id, item), menuList, 1))
     {
@@ -566,7 +566,7 @@ switch(menu_id)
   case CONFIG_MENU_CREATURE_SPEED:
     // Creature Speed
    {
-   char *menuList[2] = {"COCO", "CUSTOM"};
+   std::string menuList[2] = {"COCO", "CUSTOM"};
 
    switch(menu_list(menu_id * 5, item + 2, Menu.getMenuItem(menu_id, item), menuList, 2))
     {
@@ -592,7 +592,7 @@ switch(menu_id)
   case CONFIG_MENU_REGEN_SPEED:
    // Regen Speed
    {
-   char *menuList[] = { "5 MINUTES", "3 MINUTES", "1 MINUTE" };
+   std::string menuList[] = { "5 MINUTES", "3 MINUTES", "1 MINUTE" };
 
    switch(menu_list(menu_id * 5, item + 2, Menu.getMenuItem(menu_id, item), menuList, 3))
      {
@@ -619,7 +619,7 @@ switch(menu_id)
   case CONFIG_MENU_RANDOM_MAZE:
    // Random Mazes
    {
-   char *menuList[]={ "ON", "OFF" };
+   std::string menuList[]={ "ON", "OFF" };
 
    switch(menu_list(menu_id * 5, item + 2, Menu.getMenuItem(menu_id, item), menuList, 2))
     {
@@ -640,7 +640,7 @@ switch(menu_id)
   case CONFIG_MENU_SND_MODE:
    // Sound Style (Sync, Stereo)
    {
-   char *menuList[2] = {"STEREO", "MONO"};
+   std::string menuList[2] = {"STEREO", "MONO"};
 
    switch(menu_list(menu_id * 5, item + 2, Menu.getMenuItem(menu_id, item), menuList, 2))
     {
@@ -678,7 +678,7 @@ switch(menu_id)
   case HELP_MENU_HOWTOPLAY:
    // How to play
    {
-   char *menuList[]={ "SEE FILE HOWTOPLAY.TXT" };
+   std::string menuList[]={ "SEE FILE HOWTOPLAY.TXT" };
 
    menu_list(menu_id * 5, item + 2, Menu.getMenuItem(menu_id, item), menuList, 1);
    }
@@ -688,7 +688,7 @@ switch(menu_id)
   case HELP_MENU_LICENSE:
    // License
    {
-   char *menuList[]={ "SEE FILE README.TXT" };
+   std::string menuList[]={ "SEE FILE README.TXT" };
 
    menu_list(menu_id * 5, item + 2, Menu.getMenuItem(menu_id, item), menuList, 1);
    }
@@ -736,7 +736,55 @@ switch(menu_id)
 *             list     - An array of strings (the list to be chosen from
 *             listSize - The size of the array
 ******************************************************************************/
-int OS_Link::menu_list(int x, int y, char *title, char *list[], int listSize)
+/*int OS_Link::menu_list(int x, int y, char *title, char *list[], int listSize)
+ {
+ int currentChoice = 0;
+
+ while(true)
+   {
+   viewer.drawMenuList(x, y, title, list, listSize, currentChoice);
+   SDL_Event event;
+   while(SDL_PollEvent(&event))
+   {
+   switch(event.type)
+     {
+     case SDL_KEYDOWN:
+      switch(event.key.keysym.sym)
+        {
+        case SDLK_RETURN:
+         return(currentChoice);
+         break;
+
+        case SDLK_UP:
+	 (currentChoice < 1) ? currentChoice = listSize - 1 : currentChoice--;
+         break;
+
+        case SDLK_DOWN:
+	 (currentChoice > listSize - 2) ? currentChoice = 0 : currentChoice++;
+         break;
+
+        case SDLK_ESCAPE:
+	 return(-1);
+	 break;
+
+        default:
+	 break;
+        }
+      break;
+     case SDL_QUIT:
+      quitSDL(0);
+      break;
+     case SDL_VIDEOEXPOSE:
+      SDL_GL_SwapBuffers();
+      break;
+      }
+     }
+  } // End of while loop
+
+ return(-1);
+ }*/
+
+int OS_Link::menu_list(int x, int y, char *title, std::string list[], int listSize)
  {
  int currentChoice = 0;
 
@@ -795,7 +843,62 @@ int OS_Link::menu_list(int x, int y, char *title, char *list[], int listSize)
 *  Returns: The value the user entered, or if they hit escape, the original
 *           value.
 ******************************************************************************/
-int OS_Link::menu_scrollbar(char *title, int min, int max, int current)
+/*int OS_Link::menu_scrollbar(char *title, int min, int max, int current)
+ {
+ int oldvalue  = current; //Save the old value in case the user escapes
+ int increment = (max - min) / 31;  // 31 is the number of columns
+
+   // Calculate a relative max and min and corresponding current number
+ int newMax    = increment * 31;
+ int newMin    = 0;
+     current   = current - min;
+
+ viewer.drawMenuScrollbar(title, (current - newMin) / increment);
+
+ while(true)
+   {
+   SDL_Event event;
+
+   while(SDL_PollEvent(&event))
+    {
+    switch(event.type)
+      {
+      case SDL_KEYDOWN:
+       switch(event.key.keysym.sym)
+        {
+        case SDLK_RETURN:
+         return(current + min);  // Readjust back to absolute value
+         break;
+
+        case SDLK_LEFT:
+	 (current > newMin) ? current -= increment : current = newMin;
+         break;
+
+        case SDLK_RIGHT:
+	 (current < newMax) ? current += increment : current = newMax;
+         break;
+
+        case SDLK_ESCAPE:
+	 return(oldvalue);
+	 break;
+
+        default:
+	 break;
+	}
+       viewer.drawMenuScrollbar(title, (current - newMin) / increment);
+       break;
+      case SDL_QUIT:
+       quitSDL(0);
+       break;
+      case SDL_VIDEOEXPOSE:
+       SDL_GL_SwapBuffers();
+       break;
+      }
+    }
+   }
+ }*/
+
+int OS_Link::menu_scrollbar(std::string title, int min, int max, int current)
  {
  int oldvalue  = current; //Save the old value in case the user escapes
  int increment = (max - min) / 31;  // 31 is the number of columns
@@ -951,7 +1054,7 @@ void OS_Link::loadOptFile(void)
  loadDefaults(); // In case some variables aren't in the opts file, and if no file exists
 
  sprintf(fn, "%s%s%s", confDir, pathSep, "opts.ini");
-	
+
  fin.open(fn);
  if (!fin)
  {
@@ -1129,7 +1232,7 @@ void OS_Link::loadDefaults(void)
  creature.creSpeedMul = 200;
  creature.UpdateCreSpeed();
  strcpy(savedDir, "saved");
- FullScreen = true;
+ FullScreen = false;
  width = 1024;
  creatureRegen = 5;
  scheduler.updateCreatureRegen(creatureRegen);
@@ -1173,8 +1276,10 @@ void OS_Link::changeVideoRes(int newWidth)
 
  if(FullScreen)
   {
-  flags |= SDL_FULLSCREEN;
-  SDL_ShowCursor(SDL_DISABLE);
+  //flags |= SDL_FULLSCREEN;
+  flags &= ~(SDL_FULLSCREEN);
+  //SDL_ShowCursor(SDL_DISABLE);
+  SDL_ShowCursor(SDL_ENABLE);
   }
  else
   {
@@ -1197,7 +1302,7 @@ void OS_Link::changeVideoRes(int newWidth)
   height = newHeight;
   crd.setCurWH((double) width);
   }
-  
+
  viewer.setup_opengl();
  glMatrixMode(GL_MODELVIEW);
  glLoadIdentity();

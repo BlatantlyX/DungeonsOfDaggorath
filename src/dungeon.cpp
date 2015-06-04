@@ -46,10 +46,10 @@ void Dungeon::printMaze()
 				switch (x)
 				{
 				case 0:
-					printf("·%c", NS[n]);
+					printf("x%c", NS[n]);
 					if (row >= 31)
 					{
-						printf("·");
+						printf("x");
 					}
 					break;
 				case 1:
@@ -66,10 +66,10 @@ void Dungeon::printMaze()
 				case 2:
 					if (idx >= 992)
 					{
-						printf("·%c", NS[s]);
+						printf("x%c", NS[s]);
 						if (row >= 31)
 						{
-							printf("·");
+							printf("x");
 						}
 					}
 				}
@@ -87,7 +87,7 @@ Dungeon::Dungeon() : VFTPTR(0)
 {
 	SetLEVTABOrig();  //Original seed values will be overwritten (in Player::setInitialObjects())
 					 //if new random map game.
-	
+
 	MSKTAB[0] = 0x03;
 	MSKTAB[1] = 0x0C;
 	MSKTAB[2] = 0x30;
@@ -116,9 +116,9 @@ Dungeon::Dungeon() : VFTPTR(0)
 					 //if new random map game.
 
 	// Scaffolding Inits
-	NS[3]='—';
+	NS[3]='x';
 	NS[2]='=';
-	NS[1]='—';
+	NS[1]='x';
 	NS[0]=' ';
 	EW[3]='|';
 	EW[2]=')';
@@ -143,7 +143,7 @@ void Dungeon::DGNGEN()
 	RowCol	DROW;
 	RowCol	ROW;
 	int		spin;
-	
+
 	/* Phase 1: Create Maze */
 
 	/* Set Cells to 0xFF */
@@ -157,7 +157,7 @@ void Dungeon::DGNGEN()
 
 	/* Set Starting Room */
 	if (!game.RandomMaze || game.IsDemo)
-	{  //Is this an original game?  Yes:		
+	{  //Is this an original game?  Yes:
 		a_col = (rng.RANDOM() & 31);
 		a_row = (rng.RANDOM() & 31);
 		DROW.setRC(a_row, a_col);
@@ -184,7 +184,7 @@ void Dungeon::DGNGEN()
 				a_col = VFTTAB[15];
 				break;
 		}
-	
+
 		if (player.PROW == 0x10 && player.PCOL == 0x0B && game.LEVEL == 0)
 		{  //Are we starting a new game?
 			player.PROW = a_row;
@@ -391,7 +391,7 @@ dodBYTE	Dungeon::VFIND(RowCol rc)
 bool Dungeon::VFINDsub(dodBYTE & a, int & u, RowCol * rc)
 {
 	dodBYTE r, c;
-	
+
 	do
 	{
 		a = VFTTAB[u++];
@@ -436,7 +436,7 @@ void Dungeon::MAKDOR(dodBYTE * table)
 			maz_idx = RC2IDX(a_row, a_col);
 			val = MAZLND[maz_idx];
 		} while (val == 0xFF);
-	
+
 		DIR = (rng.RANDOM() & 3);
 	} while ((val & MSKTAB[DIR]) != 0);
 

@@ -64,10 +64,10 @@ int main(int argc, char * argv[])
 	return 0;
 }
 
-void printalpha(int * vl, int len, char * name)
+void printalpha(int * vl, int len, std::string name)
 {
 	int ctr;
-	printf("Utils::LoadFromDecDigit(%s, \"", name);
+	printf("Utils::LoadFromDecDigit(%s, \"", name.c_str());
 	for (ctr = 1; ctr < len; ++ctr)
 	{
 		printf("%02X",vl[ctr]);
@@ -154,9 +154,9 @@ void printvls()
 */
 }
 
-Mix_Chunk *Utils::LoadSound(char *snd)
+Mix_Chunk *Utils::LoadSound(std::string snd)
 {
 	char fn[256];
-	sprintf(fn, "%s%s%s", oslink.soundDir, oslink.pathSep, snd);
+	sprintf(fn, "%s%s%s", oslink.soundDir, oslink.pathSep, snd.c_str());
 	return Mix_LoadWAV(fn);
 }

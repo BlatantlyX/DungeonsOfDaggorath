@@ -26,7 +26,7 @@ void GetDodStr(char *pstr, dodBYTE *dodstr)
 }
 
 // translate a standard C string int a DOD string
-void SetDodStr(dodBYTE *dodstr, char *pstr)
+/*void SetDodStr(dodBYTE *dodstr, char *pstr)
 {
 	int x;
 	char c;
@@ -36,7 +36,22 @@ void SetDodStr(dodBYTE *dodstr, char *pstr)
 			dodstr[x]=c-64;
 		else
 			dodstr[x]=Parser::I_SP; // replace it with a space
-		
+
+	}
+	dodstr[x]=Parser::I_NULL;
+}*/
+
+void SetDodStr(dodBYTE *dodstr, std::string pstr)
+{
+	int x;
+	char c;
+	for (x=0; x < pstr.length();x++) { // for each character in pstr
+		c=toupper(pstr[x]);		// convert it to uppercase
+		if (c>='A' || c<='Z')
+			dodstr[x]=c-64;
+		else
+			dodstr[x]=Parser::I_SP; // replace it with a space
+
 	}
 	dodstr[x]=Parser::I_NULL;
 }
