@@ -79,10 +79,10 @@ public:
 	void		Reset();
 	bool		ShowFade(int fadeMode);
 	void            drawMenu(menu, int, int);
-	void		drawMenuList(int, int, char *, std::string[], int, int);
+	void		drawMenuList(int, int, std::string, std::string[], int, int);
 	void		drawMenuScrollbar(std::string, int);
-	void		drawMenuStringTitle(char *);
-	void		drawMenuString(char *);
+	void		drawMenuStringTitle(std::string);
+	void		drawMenuString(std::string);
 	void		aboutBox(void);
 
 	// Public Data Fields
@@ -166,7 +166,7 @@ private:
 	// Internal Implementation
 	void drawVectorListAQ(int VLA[]);
 	void drawCharacter(char c);
-	void drawString(int x, int y, std::string str, int len);
+	void drawString(int x, int y, std::string str);
 	void drawString_internal(int x, int y, dodBYTE * str, int len);
 	void plotPoint(double X, double Y);
 	char dod_to_ascii(dodBYTE c);

@@ -370,7 +370,7 @@ public:
 	}
 };
 
-// This class is a port of Daggorath's custom RNG
+// This class is a port of Daggorath's custom Random Number Generator
 class RNG
 {
 public:

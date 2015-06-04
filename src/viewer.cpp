@@ -958,7 +958,7 @@ void Viewer::drawArea(TXB * a)
 
 	while (cnt < a->len)
 	{
-		drawString(0, a->top + cnt / 32, a->area + cnt, 32);
+		drawString(0, a->top + cnt / 32, a->area + cnt);
 		cnt += 32;
 	}
 }
@@ -1934,12 +1934,12 @@ char Viewer::dod_to_ascii(dodBYTE c)
 }
 
 // Draws a string
-void Viewer::drawString(int x, int y, std::string str, int len)
+void Viewer::drawString(int x, int y, std::string str)
 {
 	int ctr;
 	glLoadIdentity();
 	glTranslatef(crd.newX(x*8), crd.newY(((y+1)*8)), 0.0);
-	for (ctr=0; ctr < len; ++ctr)
+	for (ctr=0; ctr < str.length(); ++ctr)
 	{
 		drawCharacter(str[ctr]);
 		glTranslatef(crd.newXa(8), 0.0, 0.0);
@@ -2063,8 +2063,7 @@ void Viewer::drawMenu(menu mainMenu, int menu_id, int highlight)
  glLoadIdentity();
 
   // Draw Menu Items
- drawString(menu_id * 5, 0, mainMenu.getMenuName(menu_id),
-                             strlen(mainMenu.getMenuName(menu_id)));
+ drawString(menu_id * 5, 0, mainMenu.getMenuName(menu_id));
 
  for(int i = 0; i < mainMenu.getMenuSize(menu_id); i++)
    {
@@ -2085,7 +2084,7 @@ void Viewer::drawMenu(menu mainMenu, int menu_id, int highlight)
      glColor3fv(bgColor);
      }
 
-   drawString(x, y, mainMenu.getMenuItem(menu_id, i), length);
+   drawString(x, y, mainMenu.getMenuItem(menu_id, i));
    glColor3fv(fgColor);
    }
 
@@ -2105,7 +2104,7 @@ void Viewer::drawMenu(menu mainMenu, int menu_id, int highlight)
 
   Function: Draws a menu list
 ****************************************************************/
-void Viewer::drawMenuList(int x, int y, char *title, std::string list[], int listSize, int highlight)
+void Viewer::drawMenuList(int x, int y, std::string title, std::string list[], int listSize, int highlight)
  {
  int length;
 
@@ -2114,7 +2113,7 @@ void Viewer::drawMenuList(int x, int y, char *title, std::string list[], int lis
  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
  glColor3fv(fgColor);
 
- drawString(x, y, title, strlen(title));
+ drawString(x, y, title);
  y += 2;
 
   // Draw Menu Items
@@ -2135,7 +2134,7 @@ void Viewer::drawMenuList(int x, int y, char *title, std::string list[], int lis
      glColor3fv(bgColor);
      }
 
-   drawString(x, y, list[i], length);
+   drawString(x, y, list[i]);
    glColor3fv(fgColor);
    }
 
@@ -2161,23 +2160,23 @@ void Viewer::drawMenuScrollbar(std::string title, int current)
  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
  glColor4fv(fgColor);
 
- drawString(0, 0, title, title.length());
- drawString(0, 2, "USE ARROW KEYS TO NAVIGATE", 26);
- drawString(0, 3, "PRESS ENTER WHEN FINISHED", 25);
- drawString(0, 4, "OR ESCAPE TO CANCEL", 19);
- drawString(0, 6, "MIN", 3);
- drawString(29,6, "MAX", 3);
+ drawString(0, 0, title);
+ drawString(0, 2, "USE ARROW KEYS TO NAVIGATE");
+ drawString(0, 3, "PRESS ENTER WHEN FINISHED");
+ drawString(0, 4, "OR ESCAPE TO CANCEL");
+ drawString(0, 6, "MIN");
+ drawString(29,6, "MAX");
 
  for(x = 0; x < current; x++)
   {
-  drawString(x, 7, "-", 1);
+  drawString(x, 7, "-");
   }
 
- drawString(current, 7, "+", 1);
+ drawString(current, 7, "+");
 
  for(x = current + 1; x < 32; x++)
   {
-  drawString(x, 7, "-", 1);
+  drawString(x, 7, "-");
   }
 
   // Update the screen
@@ -2191,14 +2190,14 @@ void Viewer::drawMenuScrollbar(std::string title, int current)
 
   Function: Draws a menu string box
 ****************************************************************/
-void Viewer::drawMenuStringTitle(char *title)
+void Viewer::drawMenuStringTitle(std::string title)
  {
   // Clear screen
  glColor4fv(bgColor);
  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
  glColor4fv(fgColor);
 
- drawString(0, 0, title, strlen(title));
+ drawString(0, 0, title);
 
   // Update the screen
  SDL_GL_SwapBuffers();
@@ -2211,10 +2210,10 @@ void Viewer::drawMenuStringTitle(char *title)
 
   Function: Draws a menu string box
 ****************************************************************/
-void Viewer::drawMenuString(char *currentString)
+void Viewer::drawMenuString(std::string currentString)
  {
- drawString(0, 2, currentString, strlen(currentString));
- drawString(strlen(currentString), 2, "_", 1);
+ drawString(0, 2, currentString);
+ drawString(currentString.length(), 2, "_");
 
   // Update the screen
  SDL_GL_SwapBuffers();
@@ -2232,22 +2231,22 @@ void Viewer::aboutBox(void)
  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
  glColor4fv(fgColor);
 
- drawString(0, 3, "ABOUT DUNGEONS OF DAGGORATH", 27);
- drawString(0, 4, "COPYRIGHT 1982 DYNAMICRO", 24);
- drawString(0, 5, "ORIGINAL DESIGN. DOUGLAS MORGAN", 31);
- drawString(0, 6, "PC PORT BY RICHARD HUNERLACH", 28);
- drawString(0, 7, "VARIOUS OTHER CONTRIBUTIONS BY", 30);
- drawString(1, 8, "TIM LINDNER", 11);
- drawString(1, 9, "AARON OLIVER", 12);
- drawString(1,10, "ANTHONY BUTTIGIEG", 17);
- drawString(1,11, "BRUCE", 5);
- drawString(1,12, "JOE LAVIGNE", 11);
- drawString(1,13, "KEN THOMPSON", 12);
- drawString(1,14, "ERICK RITCHIE", 13);
- drawString(1,15, "MATTHEW EYSTER", 14);
- drawString(1,16, "DAN GENDREAU", 12);
- drawString(1,17, "JOSH ALBRIGHT", 13);
- drawString(1,18, "MANY OTHERS NOT MENTIONED HERE!", 31);
+ drawString(0, 3, "ABOUT DUNGEONS OF DAGGORATH");
+ drawString(0, 4, "COPYRIGHT 1982 DYNAMICRO");
+ drawString(0, 5, "ORIGINAL DESIGN. DOUGLAS MORGAN");
+ drawString(0, 6, "PC PORT BY RICHARD HUNERLACH");
+ drawString(0, 7, "VARIOUS OTHER CONTRIBUTIONS BY");
+ drawString(1, 8, "TIM LINDNER");
+ drawString(1, 9, "AARON OLIVER");
+ drawString(1,10, "ANTHONY BUTTIGIEG");
+ drawString(1,11, "BRUCE");
+ drawString(1,12, "JOE LAVIGNE");
+ drawString(1,13, "KEN THOMPSON");
+ drawString(1,14, "ERICK RITCHIE");
+ drawString(1,15, "MATTHEW EYSTER");
+ drawString(1,16, "DAN GENDREAU");
+ drawString(1,17, "JOSH ALBRIGHT");
+ drawString(1,18, "MANY OTHERS NOT MENTIONED HERE!");
 
   // Update the screen
  SDL_GL_SwapBuffers();
