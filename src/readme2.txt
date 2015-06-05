@@ -1,3 +1,5 @@
+THIS FILE IS OLD, PLEASE IGNORE
+
 Daggorath PC-Port
 Version 0.2.2
 By Richard Hunerlach

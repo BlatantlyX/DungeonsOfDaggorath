@@ -79,7 +79,7 @@ void Scheduler::SYSTCB()
 	{
 		TCBLND[ctr].clear();
 	}
-	
+
 	TCBPTR = 0;
 
 	TCBLND[0].type = TID_CLOCK;
@@ -93,14 +93,14 @@ void Scheduler::SYSTCB()
 	TCBLND[2].type = TID_REFRESH_DISP;
 	TCBLND[2].frequency = 300;		// Three TENTHs
 	TCBindex = GETTCB();
-	
+
 	TCBLND[3].type = TID_HRTSLOW;
 	TCBindex = GETTCB();
-	
+
 	TCBLND[4].type = TID_TORCHBURN;
 	TCBLND[4].frequency = 5000;		// Five Seconds
 	TCBindex = GETTCB();
-	
+
 	TCBLND[5].type = TID_CRTREGEN;
 	TCBLND[5].frequency = 300000;	// Five minutes
 	TCBindex = GETTCB();
@@ -199,7 +199,7 @@ void Scheduler::CLOCK()
 
 	// Update elaplsed time
 	elapsedTime = curTime - TCBLND[0].prev_time;
-	
+
 	// Reality check
 	if (elapsedTime > 126 * 17)
 	{
@@ -209,7 +209,7 @@ void Scheduler::CLOCK()
 	if (elapsedTime >= 17)
 	{
 		// Update Task's prev_time
-		TCBLND[0].prev_time = curTime;	
+		TCBLND[0].prev_time = curTime;
 		if (player.HBEATF != 0)
 		{
 			player.HEARTC -= (elapsedTime / 17);
@@ -220,7 +220,7 @@ void Scheduler::CLOCK()
 			if (player.HEARTC == 0)
 			{
 				player.HEARTC = player.HEARTR;
-				
+
 				// make sound
 				Mix_PlayChannel(hrtChannel, hrtSound[(dodBYTE) (player.HEARTS + 1)], 0);
 				while (Mix_Playing(hrtChannel) == 1) ; // !!!
@@ -290,7 +290,7 @@ bool Scheduler::fadeLoop()
 	// Start buzz
 	Mix_Volume(viewer.fadChannel, 0);
 	Mix_PlayChannel(viewer.fadChannel, creature.buzz, -1);
-	
+
 	while(true)
 	{
 		if ( keyCheck() )
@@ -337,7 +337,7 @@ void Scheduler::deathFadeLoop()
 	// Start buzz
 	Mix_Volume(viewer.fadChannel, 0);
 	Mix_PlayChannel(viewer.fadChannel, creature.buzz, -1);
-	
+
 	while (!viewer.done)
 	{
 		viewer.death_fade(viewer.W1_VLA);
@@ -389,7 +389,7 @@ void Scheduler::winFadeLoop()
 	// Start buzz
 	Mix_Volume(viewer.fadChannel, 0);
 	Mix_PlayChannel(viewer.fadChannel, creature.buzz, -1);
-	
+
 	while (!viewer.done)
 	{
 		viewer.death_fade(viewer.W2_VLA);
@@ -433,8 +433,8 @@ bool Scheduler::keyCheck()
 		case SDL_QUIT:
 			oslink.quitSDL(0); // eventually change to meta-menu
 			break;
-		case SDL_VIDEOEXPOSE:
-			SDL_GL_SwapBuffers();
+		case SDL_WINDOWEVENT_EXPOSED:
+			SDL_GL_SwapWindow(oslink.sdlWindow);
 			break;
 		}
 	}
@@ -442,7 +442,7 @@ bool Scheduler::keyCheck()
 }
 
 // Used by wizard fade in/out function
-bool Scheduler::keyHandler(SDL_keysym * keysym)
+bool Scheduler::keyHandler(SDL_Keysym * keysym)
 {
 	bool rc;
 
@@ -475,8 +475,8 @@ bool Scheduler::EscCheck()
 		case SDL_QUIT:
 			oslink.quitSDL(0); // eventually change to meta-menu
 			break;
-		case SDL_VIDEOEXPOSE:
-			SDL_GL_SwapBuffers();
+		case SDL_WINDOWEVENT_EXPOSED:
+			SDL_GL_SwapWindow(oslink.sdlWindow);
 			break;
 		}
 	}
@@ -484,7 +484,7 @@ bool Scheduler::EscCheck()
 }
 
 // Used by wizard fade in/out function
-bool Scheduler::EscHandler(SDL_keysym * keysym)
+bool Scheduler::EscHandler(SDL_Keysym * keysym)
 {
 	bool rc;
 
@@ -594,7 +594,7 @@ void Scheduler::SAVE()
 		sprintf(outstr, "%d", object.OCBLND[ctr].P_OCMGO); fout << outstr << endl;
 		sprintf(outstr, "%d", object.OCBLND[ctr].P_OCPHO); fout << outstr << endl;
 	}
-	
+
 	sprintf(outstr, "%d", viewer.RLIGHT); fout << outstr << endl;
 	sprintf(outstr, "%d", viewer.MLIGHT); fout << outstr << endl;
 	sprintf(outstr, "%d", viewer.OLIGHT); fout << outstr << endl;
@@ -622,7 +622,7 @@ void Scheduler::SAVE()
 	sprintf(outstr, "%d", game.CreaturesIgnoreObjects); fout << outstr << endl;
 	sprintf(outstr, "%d", game.CreaturesInstaRegen); fout << outstr << endl;
 	sprintf(outstr, "%d", game.MarkDoorsOnScrollMaps); fout << outstr << endl;
-		
+
 	fout.close();
 }
 

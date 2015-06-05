@@ -70,7 +70,6 @@ void OS_Link::init()
 	loadOptFile();
 
 	Uint32 ticks1, ticks2;
-	const SDL_VideoInfo * info = {};
 	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO) < 0)
 	{
 		fprintf(stderr, "Video initialization failed: %s\n", SDL_GetError());
@@ -90,23 +89,31 @@ void OS_Link::init()
 
 	Mix_AllocateChannels(4);
 	Mix_Volume(-1, MIX_MAX_VOLUME);
+	if(FullScreen == 0){
+		sdlWindow = SDL_CreateWindow("DOD", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, (int) (width * 0.75),SDL_WINDOW_OPENGL);
+	}else{
+		sdlWindow = SDL_CreateWindow("DOD", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, (int) (width * 0.75),SDL_WINDOW_FULLSCREEN|SDL_WINDOW_OPENGL);
+	}
 
-	info = SDL_GetVideoInfo();
-	if(!info)
-	{
-		fprintf(stderr, "Video query failed: %s\n", SDL_GetError());
+	if(sdlWindow == 0){
+		fprintf(stderr, "Window creation failed: %s\n", SDL_GetError());
 		quitSDL(1);
 	}
-	bpp = info->vfmt->BitsPerPixel;
+	sdlGlContext = SDL_GL_CreateContext(sdlWindow);
+	if(sdlGlContext == 0){
+		fprintf(stderr, "OpenGL context creation failed: %s\n", SDL_GetError());
+		quitSDL(1);
+	}
+	//bpp = info->vfmt->BitsPerPixel;
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	flags = SDL_OPENGL;
+	//flags = SDL_OPENGL;
 
 	changeVideoRes(width); // All changing video res code was moved here
-	SDL_WM_SetCaption("Dungeons of Daggorath", "");
+	SDL_SetWindowTitle(sdlWindow, "Dungeons of Daggorath");
 
 	memset(keys, parser.C_SP, keyLen);
 
@@ -238,8 +245,8 @@ void OS_Link::process_events()
 		case SDL_QUIT:
 			quitSDL(0);
 			break;
-		case SDL_VIDEOEXPOSE:
-			SDL_GL_SwapBuffers();
+		case SDL_WINDOWEVENT_EXPOSED:
+			SDL_GL_SwapWindow(sdlWindow);
 			break;
 		}
 	}
@@ -254,7 +261,7 @@ void OS_Link::quitSDL(int code)
 }
 
 // Processes key strokes.
-void OS_Link::handle_key_down(SDL_keysym * keysym)
+void OS_Link::handle_key_down(SDL_Keysym * keysym)
 {
 	dodBYTE c;
 	if (viewer.display_mode == Viewer::MODE_MAP)
@@ -282,15 +289,15 @@ void OS_Link::handle_key_down(SDL_keysym * keysym)
 		case SDLK_LCTRL:
 		case SDLK_RALT:
 		case SDLK_LALT:
-		case SDLK_RMETA:
-		case SDLK_LMETA:
-		case SDLK_LSUPER:
-		case SDLK_RSUPER:
+		case SDLK_RGUI:
+		case SDLK_LGUI:
+		//case SDLK_LSUPER:
+		//case SDLK_RSUPER:
 		case SDLK_MODE:
-		case SDLK_COMPOSE:
-		case SDLK_NUMLOCK:
+		case SDLK_APPLICATION:
+		case SDLK_NUMLOCKCLEAR:
 		case SDLK_CAPSLOCK:
-		case SDLK_SCROLLOCK:
+		case SDLK_SCROLLLOCK:
 			// ignore these keys
 			return;
 
@@ -375,8 +382,8 @@ bool OS_Link::main_menu()
      case SDL_QUIT:
       quitSDL(0);
       break;
-     case SDL_VIDEOEXPOSE:
-      SDL_GL_SwapBuffers();
+     case SDL_WINDOWEVENT_EXPOSED:
+		SDL_GL_SwapWindow(sdlWindow);
       break;
       }
      }
@@ -713,8 +720,8 @@ switch(menu_id)
       case SDL_QUIT:
        quitSDL(0);  // Quits SDL
        break;
-      case SDL_VIDEOEXPOSE:
-       SDL_GL_SwapBuffers();
+      case SDL_WINDOWEVENT_EXPOSED:
+		SDL_GL_SwapWindow(sdlWindow);
        break;
       }
      }
@@ -736,53 +743,6 @@ switch(menu_id)
 *             list     - An array of strings (the list to be chosen from
 *             listSize - The size of the array
 ******************************************************************************/
-/*int OS_Link::menu_list(int x, int y, char *title, char *list[], int listSize)
- {
- int currentChoice = 0;
-
- while(true)
-   {
-   viewer.drawMenuList(x, y, title, list, listSize, currentChoice);
-   SDL_Event event;
-   while(SDL_PollEvent(&event))
-   {
-   switch(event.type)
-     {
-     case SDL_KEYDOWN:
-      switch(event.key.keysym.sym)
-        {
-        case SDLK_RETURN:
-         return(currentChoice);
-         break;
-
-        case SDLK_UP:
-	 (currentChoice < 1) ? currentChoice = listSize - 1 : currentChoice--;
-         break;
-
-        case SDLK_DOWN:
-	 (currentChoice > listSize - 2) ? currentChoice = 0 : currentChoice++;
-         break;
-
-        case SDLK_ESCAPE:
-	 return(-1);
-	 break;
-
-        default:
-	 break;
-        }
-      break;
-     case SDL_QUIT:
-      quitSDL(0);
-      break;
-     case SDL_VIDEOEXPOSE:
-      SDL_GL_SwapBuffers();
-      break;
-      }
-     }
-  } // End of while loop
-
- return(-1);
- }*/
 
 int OS_Link::menu_list(int x, int y, char *title, std::string list[], int listSize)
  {
@@ -822,8 +782,8 @@ int OS_Link::menu_list(int x, int y, char *title, std::string list[], int listSi
      case SDL_QUIT:
       quitSDL(0);
       break;
-     case SDL_VIDEOEXPOSE:
-      SDL_GL_SwapBuffers();
+     case SDL_WINDOWEVENT_EXPOSED:
+		SDL_GL_SwapWindow(sdlWindow);
       break;
       }
      }
@@ -843,60 +803,6 @@ int OS_Link::menu_list(int x, int y, char *title, std::string list[], int listSi
 *  Returns: The value the user entered, or if they hit escape, the original
 *           value.
 ******************************************************************************/
-/*int OS_Link::menu_scrollbar(char *title, int min, int max, int current)
- {
- int oldvalue  = current; //Save the old value in case the user escapes
- int increment = (max - min) / 31;  // 31 is the number of columns
-
-   // Calculate a relative max and min and corresponding current number
- int newMax    = increment * 31;
- int newMin    = 0;
-     current   = current - min;
-
- viewer.drawMenuScrollbar(title, (current - newMin) / increment);
-
- while(true)
-   {
-   SDL_Event event;
-
-   while(SDL_PollEvent(&event))
-    {
-    switch(event.type)
-      {
-      case SDL_KEYDOWN:
-       switch(event.key.keysym.sym)
-        {
-        case SDLK_RETURN:
-         return(current + min);  // Readjust back to absolute value
-         break;
-
-        case SDLK_LEFT:
-	 (current > newMin) ? current -= increment : current = newMin;
-         break;
-
-        case SDLK_RIGHT:
-	 (current < newMax) ? current += increment : current = newMax;
-         break;
-
-        case SDLK_ESCAPE:
-	 return(oldvalue);
-	 break;
-
-        default:
-	 break;
-	}
-       viewer.drawMenuScrollbar(title, (current - newMin) / increment);
-       break;
-      case SDL_QUIT:
-       quitSDL(0);
-       break;
-      case SDL_VIDEOEXPOSE:
-       SDL_GL_SwapBuffers();
-       break;
-      }
-    }
-   }
- }*/
 
 int OS_Link::menu_scrollbar(std::string title, int min, int max, int current)
  {
@@ -945,8 +851,8 @@ int OS_Link::menu_scrollbar(std::string title, int min, int max, int current)
       case SDL_QUIT:
        quitSDL(0);
        break;
-      case SDL_VIDEOEXPOSE:
-       SDL_GL_SwapBuffers();
+      case SDL_WINDOWEVENT_EXPOSED:
+		SDL_GL_SwapWindow(sdlWindow);
        break;
       }
     }
@@ -987,15 +893,15 @@ void OS_Link::menu_string(char *newString, char *title, int maxLength)
         case SDLK_LCTRL:
         case SDLK_RALT:
         case SDLK_LALT:
-        case SDLK_RMETA:
-        case SDLK_LMETA:
-        case SDLK_LSUPER:
-        case SDLK_RSUPER:
+        case SDLK_RGUI:
+        case SDLK_LGUI:
+        //case SDLK_LSUPER:
+        //case SDLK_RSUPER:
         case SDLK_MODE:
-        case SDLK_COMPOSE:
-        case SDLK_NUMLOCK:
+        case SDLK_APPLICATION:
+        case SDLK_NUMLOCKCLEAR:
         case SDLK_CAPSLOCK:
-        case SDLK_SCROLLOCK:
+        case SDLK_SCROLLLOCK:
         case SDLK_UP:
         case SDLK_DOWN:
           // ignore these keys
@@ -1030,8 +936,8 @@ void OS_Link::menu_string(char *newString, char *title, int maxLength)
      case SDL_QUIT:
       quitSDL(0);
       break;
-     case SDL_VIDEOEXPOSE:
-      SDL_GL_SwapBuffers();
+     case SDL_WINDOWEVENT_EXPOSED:
+		SDL_GL_SwapWindow(sdlWindow);
       break;
       }
      }
@@ -1261,45 +1167,27 @@ void OS_Link::changeVideoRes(int newWidth)
  {
  int newHeight;
 
- SDL_Surface * surface;
- const SDL_VideoInfo * info = NULL;
- surface = SDL_GetVideoSurface();
-
- info = SDL_GetVideoInfo();
- if(!info)
-  {
-  fprintf(stderr, "Video query failed: %s\n", SDL_GetError());
-  quitSDL(1);
-  }
-
  newHeight = (int) (newWidth * 0.75);
 
- if(FullScreen)
-  {
-  flags |= SDL_FULLSCREEN;
-  SDL_ShowCursor(SDL_DISABLE);
-  }
- else
-  {
-  flags &= ~(SDL_FULLSCREEN);
-  SDL_ShowCursor(SDL_ENABLE);
-  }
+	SDL_SetWindowSize(sdlWindow, newWidth, newHeight);
 
- if((surface = SDL_SetVideoMode(newWidth, newHeight, bpp, flags)) == 0)
-  {
-  fprintf(stderr, "Video mode set failed: %s\nReturning to old mode\n", SDL_GetError());
-  if((surface = SDL_SetVideoMode(width, height, bpp, flags)) == 0)
-    {
-    fprintf(stderr, "Video mode set failed, this should be impossible\n Debug OS_Link.changeVideoRes\nSDL Reported %s\n", SDL_GetError());
-    exit(1);
-    }
-  }
- else
-  {
+	if(FullScreen){
+		if(SDL_SetWindowFullscreen(sdlWindow, SDL_WINDOW_FULLSCREEN) == 0){
+			SDL_ShowCursor(SDL_DISABLE);
+		}else{
+			fprintf(stderr, "Window fullscreen failed: %s\n", SDL_GetError());
+		}
+
+	}else{
+		if(SDL_SetWindowFullscreen(sdlWindow, 0) == 0){
+			SDL_ShowCursor(SDL_ENABLE);
+		}else{
+			fprintf(stderr, "Window fullscreen failed: %s\n", SDL_GetError());
+		}
+	}
   width  = newWidth;
   height = newHeight;
   crd.setCurWH((double) width);
-  }
 
  viewer.setup_opengl();
  glMatrixMode(GL_MODELVIEW);

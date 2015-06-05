@@ -20,8 +20,8 @@ is held by Douglas J. Morgan.
 #ifndef OS_LINK_HEADER
 #define OS_LINK_HEADER
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_opengl.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
 
 #include "dod.h"
 
@@ -61,9 +61,11 @@ public:
 	int		audio_channels;
 	int		audio_buffers;
 
+	SDL_Window * sdlWindow;
+
 private:
 	// Internal Implementation
-	void handle_key_down(SDL_keysym * keysym);	// keyboard handler
+	void handle_key_down(SDL_Keysym * keysym);	// keyboard handler
 	bool menu_return(int, int, menu);		// Used by main menu
 	//int  menu_list(int x, int y, char *title, char *list[], int listSize);
 	int  menu_list(int x, int y, char *title, std::string list[], int listSize);
@@ -74,6 +76,9 @@ private:
 	void loadDefaults(void);
 	void changeFullScreen(void);
 	void changeVideoRes(int newWidth);
+
+
+	SDL_GLContext sdlGlContext;
 
 	// Data Fields
 	int  bpp;	    // bits per pixel

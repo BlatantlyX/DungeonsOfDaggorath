@@ -1,3 +1,7 @@
+Changes in 0.5.0:
+
+*Changed from SDL to SDL2 which fixed a few bugs
+
 Changes in 0.4.1:
 
 *c++11 compatibility

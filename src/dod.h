@@ -20,9 +20,9 @@ is held by Douglas J. Morgan.
 #define DOD_COMMON_HEADER
 
 // SDL Headers
-#include <SDL/SDL.h>
-#include <SDL/SDL_opengl.h>
-#include <SDL/SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
+#include <SDL2/SDL_mixer.h>
 
 // Standard headers
 #include <stdio.h>

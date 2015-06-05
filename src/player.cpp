@@ -94,11 +94,11 @@ int Player::PLAYER()
 	dodBYTE objstr[10];
 	dodBYTE * X, * U;
 	int Xup;
-	
+
 	// Update Task's next_time
 	scheduler.TCBLND[Scheduler::TID_PLAYER].next_time = scheduler.curTime +
 		scheduler.TCBLND[Scheduler::TID_PLAYER].frequency;
-	
+
 	dodBYTE c;
 	if (game.AUTFLG == 0)
 	{
@@ -151,10 +151,10 @@ int Player::PLAYER()
 			game.demoRestart = true;
 			return 0;
 		}
-		
+
 		// Feed next autoplay command to HUMAN
 		tokCtr = 1;
-		
+
 		do
 		{
 			if (tokCtr == 1)
@@ -194,7 +194,7 @@ bool Player::HUMAN(dodBYTE c)
 {
 	int		res;
 	dodBYTE	A, B;
-	
+
 	// Check if we are displaying the map
 	if (HEARTF == 0)
 	{
@@ -320,7 +320,7 @@ int Player::HSLOW()
 	// Update Task's next_time
 	scheduler.TCBLND[Scheduler::TID_HRTSLOW].next_time = scheduler.curTime +
 		(HEARTR * 17);
-	
+
 	return 0;
 }
 
@@ -437,7 +437,7 @@ void Player::HUPDAT()
 int Player::BURNER()
 {
 	// Update Task's next_time
-	scheduler.TCBLND[Scheduler::TID_TORCHBURN].next_time = 
+	scheduler.TCBLND[Scheduler::TID_TORCHBURN].next_time =
 		scheduler.curTime +
 		scheduler.TCBLND[Scheduler::TID_TORCHBURN].frequency;
 
@@ -484,7 +484,7 @@ int Player::BURNER()
 void Player::setInitialObjects(bool isDemo)
 {
 	int x, y;
-	
+
 	if (isDemo)
 	{
 		game.IsDemo = true;
@@ -738,14 +738,14 @@ void Player::PATTK()
 		// transport to 4th level
 
 		// do fade in with message
-		
+
 		// Pause so player can see scroll
 		ticks1 = SDL_GetTicks();
 		do
 		{
 			ticks2 = SDL_GetTicks();
 		} while (ticks2 < ticks1 + wizDelay);
-		
+
 		while(SDL_PollEvent(&event))
 		{
 			; // clear event buffer
@@ -847,7 +847,7 @@ bool Player::ATTACK(int AP, int DP, int DD)
 	}
 
 	ret = rng.RANDOM() + adjust - 127;
-	
+
 	if (ret < 0)
 	{
 		return false;
@@ -892,7 +892,7 @@ void Player::PCLIMB()
 	dodBYTE	A, B;
 	RowCol	rc;
 	dodSHORT temp;
-	
+
 	rc.setRC(PROW,PCOL);
 	vres = dungeon.VFIND(rc);
 	if (vres == Dungeon::VF_NULL)
@@ -1102,7 +1102,7 @@ void Player::PINCAN()
 	RowCol	rc;
 	SDL_Event event;
 	Uint32 ticks1, ticks2;
-	
+
 	res = parser.PARSER(object.ADJTAB, A, B, true);
 	if (res <= 0)
 	{
@@ -1137,7 +1137,7 @@ void Player::PINCAN()
 					}
 					scheduler.curTime = SDL_GetTicks();
 				}
-				
+
 				viewer.STATUS();
 				viewer.PUPDAT();
 				object.OCBLND[PLHAND].P_OCXX1 = -1;
@@ -1189,7 +1189,7 @@ void Player::PINCAN()
 					}
 					scheduler.curTime = SDL_GetTicks();
 				}
-				
+
 				viewer.STATUS();
 				viewer.PUPDAT();
 				object.OCBLND[PRHAND].P_OCXX1 = -1;
@@ -1235,7 +1235,7 @@ void Player::PMOVE()
 	int		res;
 	dodBYTE	A, B;
 	Uint32 ticks1;
-	
+
 	res = parser.PARSER(parser.DIRTAB, A, B, true);
 	if (res < 0)
 	{
@@ -1372,7 +1372,7 @@ void Player::PPULL()
 		parser.CMDERR();
 		return;
 	}
-	
+
 	int res;
 	res = parser.PARHND();
 	if (res == -1)
@@ -1541,7 +1541,7 @@ void Player::PTURN()
 {
 	int		res;
 	dodBYTE	A, B;
-	
+
 	res = parser.PARSER(parser.DIRTAB, A, B, true);
 	if (res != 1)
 	{
@@ -1662,7 +1662,7 @@ void Player::ShowTurn(dodBYTE A)
 					viewer.drawVector((x*inc*dir)+offset,y0,(x*inc*dir)+offset,y1);
 					viewer.drawArea(&viewer.TXTSTS);
 					viewer.drawArea(&viewer.TXTPRI);
-					SDL_GL_SwapBuffers();
+					SDL_GL_SwapWindow(oslink.sdlWindow);
 					redraw = false;
 				}
 			} while (scheduler.curTime < ticks1 + turnDelay);
@@ -1727,7 +1727,7 @@ void Player::PUSE()
 			}
 			scheduler.curTime = SDL_GetTicks();
 		}
-		
+
 		viewer.PUPDAT();
 		return;
 	}
@@ -1736,7 +1736,7 @@ void Player::PUSE()
 		PPOW += 1000;
 		object.OCBLND[idx].obj_id = Object::OBJ_FLASK_EMPTY;
 		object.OCBLND[idx].obj_reveal_lvl = 0;
-		
+
 		// make flask sound
 		Mix_PlayChannel(object.objChannel,
 			object.objSound[object.OCBLND[idx].obj_type], 0);
@@ -1748,7 +1748,7 @@ void Player::PUSE()
 			}
 			scheduler.curTime = SDL_GetTicks();
 		}
-		
+
 		viewer.STATUS();
 		HUPDAT();
 	}
@@ -1757,7 +1757,7 @@ void Player::PUSE()
 		PDAM = 0;
 		object.OCBLND[idx].obj_id = Object::OBJ_FLASK_EMPTY;
 		object.OCBLND[idx].obj_reveal_lvl = 0;
-		
+
 		// make flask sound
 		Mix_PlayChannel(object.objChannel,
 			object.objSound[object.OCBLND[idx].obj_type], 0);
@@ -1769,7 +1769,7 @@ void Player::PUSE()
 			}
 			scheduler.curTime = SDL_GetTicks();
 		}
-		
+
 		viewer.STATUS();
 		HUPDAT();
 	}
@@ -1780,7 +1780,7 @@ void Player::PUSE()
 
 		object.OCBLND[idx].obj_id = Object::OBJ_FLASK_EMPTY;
 		object.OCBLND[idx].obj_reveal_lvl = 0;
-		
+
 		// make flask sound
 		Mix_PlayChannel(object.objChannel,
 			object.objSound[object.OCBLND[idx].obj_type], 0);
@@ -1792,7 +1792,7 @@ void Player::PUSE()
 			}
 			scheduler.curTime = SDL_GetTicks();
 		}
-		
+
 		viewer.STATUS();
 		HUPDAT();
 	}
@@ -1803,7 +1803,7 @@ void Player::PUSE()
 		{
 			return;
 		}
-		
+
 		// make scroll sound
 		Mix_PlayChannel(object.objChannel,
 			object.objSound[object.OCBLND[idx].obj_type], 0);
@@ -1815,7 +1815,7 @@ void Player::PUSE()
 			}
 			scheduler.curTime = SDL_GetTicks();
 		}
-		
+
 		HEARTF = 0;
 		viewer.display_mode = Viewer::MODE_MAP;
 		viewer.PUPDAT();
@@ -1828,7 +1828,7 @@ void Player::PUSE()
 		{
 			return;
 		}
-		
+
 		// make scroll sound
 		Mix_PlayChannel(object.objChannel,
 			object.objSound[object.OCBLND[idx].obj_type], 0);
@@ -1840,7 +1840,7 @@ void Player::PUSE()
 			}
 			scheduler.curTime = SDL_GetTicks();
 		}
-		
+
 		HEARTF = 0;
 		viewer.display_mode = Viewer::MODE_MAP;
 		viewer.PUPDAT();
@@ -1940,8 +1940,7 @@ bool Player::PSTEP(dodBYTE dir)
 			}
 			scheduler.curTime = SDL_GetTicks();
 		}
-		
+
 		return false;
 	}
 }
-
