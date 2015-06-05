@@ -457,8 +457,7 @@ private:
 class Utils
 {
 public:
-	// This could be made into a template someday
-	static void LoadFromHex(dodBYTE * b, std::string h){
+	template<class T> static void LoadFromHex(T * b, std::string h){
 		char hexbuf[3];
 		char * end;
 		hexbuf[2] = 0;
@@ -476,33 +475,7 @@ public:
 		}
 	}
 
-	// This could be made into a template someday
-	static void LoadFromHex(int * b, std::string h){
-		char hexbuf[3];
-		char * end;
-		hexbuf[2] = 0;
-		int ctr = 0;
-
-		auto hiter = h.begin();
-
-		while (hiter != h.end())
-		{
-			hexbuf[0] = *hiter;
-			hexbuf[1] = *(++hiter);
-			*(b + ctr) = (dodBYTE) strtoul(hexbuf, &end, 16);
-			++ctr;
-			hiter++;
-		}
-	}
-
-	static void LoadFromDecDigit(dodBYTE * b, std::string dd){
-		auto dditer = dd.begin();
-		while (dditer != dd.end()){
-			*b++ = (*dditer++ - '0');
-		}
-	}
-
-	static void LoadFromDecDigit(int * b, std::string dd){
+	template<class T> static void LoadFromDecDigit(T * b, std::string dd){
 		auto dditer = dd.begin();
 		while (dditer != dd.end()){
 			*b++ = (*dditer++ - '0');
