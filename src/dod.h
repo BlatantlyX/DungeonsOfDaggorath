@@ -454,9 +454,7 @@ private:
 };
 
 // Not much here at the moment, but it could grow
-class Utils
-{
-public:
+namespace Utils{
 	template<class T> static void LoadFromHex(T * b, std::string h){
 		char hexbuf[3];
 		char * end;
@@ -482,8 +480,8 @@ public:
 		}
 	}
 
-	static Mix_Chunk *LoadSound(std::string snd);
-};
+	Mix_Chunk *LoadSound(std::string snd);
+}
 
 /*******************************************************************
   Class: menu
