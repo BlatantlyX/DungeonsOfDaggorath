@@ -1,8 +1,14 @@
 OBJECTS = creature.o dod.o dodgame.o dungeon.o enhanced.o object.o oslink.o parser.o player.o sched.o viewer.o
-OUTPUT  = ../dod
+
 
 #CXX      = clang++-3.6
+ifeq ($(OS),Windows_NT)
+OUTPUT  = ../dod.exe
+CCLINK  = -lopengl32 -lmingw32 -lSDL2main -lSDL2 -mwindows -lSDL2_mixer
+else
+OUTPUT  = ../dod
 CCLINK  = -lGL -lSDL2 -lSDL2_mixer
+endif
 #RM = rm
 # -g is debug
 CXXFLAGS = -std=c++11 -c
