@@ -281,42 +281,45 @@ void OS_Link::handle_key_down(SDL_Keysym * keysym)
 	}
 	else
 	{
-		switch(keysym->sym)
-		{
-		case SDLK_RSHIFT:
-		case SDLK_LSHIFT:
-		case SDLK_RCTRL:
-		case SDLK_LCTRL:
-		case SDLK_RALT:
-		case SDLK_LALT:
-		case SDLK_RGUI:
-		case SDLK_LGUI:
-		//case SDLK_LSUPER:
-		//case SDLK_RSUPER:
-		case SDLK_MODE:
-		case SDLK_APPLICATION:
-		case SDLK_NUMLOCKCLEAR:
-		case SDLK_CAPSLOCK:
-		case SDLK_SCROLLLOCK:
-			// ignore these keys
-			return;
+		switch(keysym->sym){
+			case SDLK_q://only allow supported keys
+			case SDLK_w:
+			case SDLK_e:
+			case SDLK_r:
+			case SDLK_t:
+			case SDLK_y:
+			case SDLK_u:
+			case SDLK_i:
+			case SDLK_o:
+			case SDLK_p:
+			case SDLK_a:
+			case SDLK_s:
+			case SDLK_d:
+			case SDLK_f:
+			case SDLK_g:
+			case SDLK_h:
+			case SDLK_j:
+			case SDLK_k:
+			case SDLK_l:
+			case SDLK_z:
+			case SDLK_x:
+			case SDLK_c:
+			case SDLK_v:
+			case SDLK_b:
+			case SDLK_n:
+			case SDLK_m:
+			case SDLK_BACKSPACE:
+			case SDLK_RETURN:
+			case SDLK_SPACE:
+				c = keys[keysym->sym];
+				break;
 
-		case SDLK_ESCAPE:
-			main_menu();   // Enter the meta-menu routine
-                        return;
+			case SDLK_ESCAPE:
+				main_menu();   // Enter the meta-menu routine
+	             return;
 
-//		case SDLK_EXCLAIM: c = '!'; break;
-//		case SDLK_LESS: c = '<'; break;
-//		case SDLK_GREATER: c = '>'; break;
-//		case SDLK_QUESTION: c = '?'; break;
-//		case SDLK_UNDERSCORE: c = '_'; break;
-//		case SDLK_PERIOD: c = '.'; break;
-//		case SDLK_LEFTBRACKET: c = '{'; break;
-//		case SDLK_RIGHTBRACKET: c = '}'; break;
-
-		default:
-			c = keys[keysym->sym];
-			break;
+			default://dump all other keys
+				return;
 		}
 		parser.KBDPUT(c);
 	}
